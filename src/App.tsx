@@ -1,8 +1,11 @@
+import "./App.css";
+import Header from "./shared/Header";
+
 function App() {
   return (
-    <main>
-      <section>hello assignmant 5</section>
-    </main>
+    <div>
+      <Header />
+    </div>
   );
 }
 

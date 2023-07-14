@@ -1,3 +1,4 @@
+import { IBook } from "../../../types/globalTypes";
 import { apiSlice } from "../api/apiSlice";
 
 const bookApi = apiSlice.injectEndpoints({
@@ -9,7 +10,16 @@ const bookApi = apiSlice.injectEndpoints({
       }),
       providesTags: ["books"],
     }),
+
+    postNewBook: builder.mutation({
+      query: (data: IBook) => ({
+        url: "/books",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["books"],
+    }),
   }),
 });
 
-export const { useGetAllBooksQuery } = bookApi;
+export const { useGetAllBooksQuery, usePostNewBookMutation } = bookApi;

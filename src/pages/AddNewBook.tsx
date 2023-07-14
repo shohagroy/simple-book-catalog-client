@@ -3,7 +3,7 @@ import React from "react";
 const AddNewBook = () => {
   return (
     <div>
-      <div className="max-w-[1000px] mx-auto my-10">
+      <div className="max-w-[1000px] mx-auto my-20">
         <div className="p-4 overflow-hidden bg-white shadow-md rounded-md">
           <div className="w-full bg-gray-300">
             <h4 className="mb-8 text-xl border-b p-2 font-bold text-center">
@@ -46,10 +46,9 @@ const AddNewBook = () => {
               <input
                 required
                 className="p-2 border bg-gray-200"
-                type="text"
+                type="date"
                 placeholder="Date..."
-                readOnly
-                value={new Date().toDateString()}
+                // value={new Date().toDateString()}
               />
             </div>
 
@@ -75,19 +74,6 @@ const AddNewBook = () => {
                   max="5"
                 />
               </div>
-            </div>
-
-            <div className="flex items-center">
-              <input
-                id="featured"
-                type="checkbox"
-                name="featured"
-                className="w-4 h-4"
-              />
-              <label htmlFor="featured" className="ml-2 text-sm">
-                {" "}
-                This is a featured book{" "}
-              </label>
             </div>
 
             <button

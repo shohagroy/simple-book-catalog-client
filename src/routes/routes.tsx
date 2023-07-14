@@ -4,6 +4,7 @@ import Home from "../pages/Home";
 import AddNewBook from "../pages/AddNewBook";
 import Login from "../pages/Login";
 import SignUp from "../pages/Signup";
+import MyWishlist from "../pages/MyWishList";
 
 const routes = createBrowserRouter([
   {
@@ -17,6 +18,10 @@ const routes = createBrowserRouter([
       {
         path: "/add-new",
         element: <AddNewBook />,
+      },
+      {
+        path: "/wish-list",
+        element: <MyWishlist />,
       },
       {
         path: "/login",

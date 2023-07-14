@@ -12,7 +12,7 @@ const Header = () => {
             <Link to={"/"}>Book Store</Link>
           </li>
           <li className="cursor-pointer">
-            <Link to={"/"}>Wishlist</Link>
+            <Link to={"/wish-list"}>Wishlist</Link>
           </li>
           <li className="cursor-pointer">
             <Link to={"/"}>My Collection</Link>

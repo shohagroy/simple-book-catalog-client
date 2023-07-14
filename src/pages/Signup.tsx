@@ -1,6 +1,51 @@
-import { Link } from "react-router-dom";
+import { useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../redux/hooks/hooks";
+import { useState } from "react";
+import { toast, ToastOptions } from "react-hot-toast";
+import { createUser } from "../redux/features/user/userSlice";
 
 const SignUp = () => {
+  const [info, setInfo] = useState({
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+
+  const navigate = useNavigate();
+
+  const { isError, isLoading, errorMessage, user } = useAppSelector(
+    (state) => state.user
+  );
+
+  const dispatch = useAppDispatch();
+
+  const handleCreateUser = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (info.password === info.confirmPassword) {
+      dispatch(createUser({ email: info.email, password: info.password }));
+    } else {
+      (
+        toast as { error: (message: string, options?: ToastOptions) => void }
+      ).error("Password did not match");
+    }
+  };
+
+  useEffect(() => {
+    if (isError && !isLoading) {
+      (
+        toast as { error: (message: string, options?: ToastOptions) => void }
+      ).error(errorMessage!);
+    }
+  }, [isError, isLoading, errorMessage]);
+
+  useEffect(() => {
+    if (user?.email && !isLoading) {
+      navigate("/");
+    }
+  }, [user.email, isLoading, navigate]);
+
   return (
     <main>
       <div className="h-[90vh] w-full flex border-b-2 bg-gray-100">
@@ -28,7 +73,9 @@ const SignUp = () => {
                   </div>
                   <div className="mt-10">
                     <form
-                      //   onSubmit={userSignUpHandelar}
+                      onSubmit={(e: React.FormEvent<HTMLFormElement>) =>
+                        handleCreateUser(e)
+                      }
                       className="text-base font-nunito"
                     >
                       <div className="space-y-4">
@@ -50,7 +97,9 @@ const SignUp = () => {
                           <input
                             className="w-full p-2 pl-10 text-gray-800 placeholder-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300 border"
                             type="email"
-                            name="email"
+                            onChange={(e) =>
+                              setInfo({ ...info, email: e.target.value })
+                            }
                             placeholder="Email"
                             required
                           />
@@ -73,7 +122,9 @@ const SignUp = () => {
                           <input
                             className="w-full p-2 pl-10 text-gray-800 placeholder-gray-600 rounded-md  border focus:outline-none focus:ring-2 focus:ring-blue-300"
                             type="password"
-                            name="password"
+                            onChange={(e) =>
+                              setInfo({ ...info, password: e.target.value })
+                            }
                             placeholder="Password"
                             required
                           />
@@ -97,7 +148,12 @@ const SignUp = () => {
                           <input
                             className="w-full p-2 pl-10 text-gray-800 placeholder-gray-600 rounded-md  border focus:outline-none focus:ring-2 focus:ring-blue-300"
                             type="password"
-                            name="password"
+                            onChange={(e) =>
+                              setInfo({
+                                ...info,
+                                confirmPassword: e.target.value,
+                              })
+                            }
                             placeholder="Confirm Password"
                             required
                           />
@@ -123,8 +179,7 @@ const SignUp = () => {
                             disabled={false}
                             className="w-full p-2 text-sm font-semibold text-center text-white transition duration-100 rounded-md md:text-lg font-nunito bg-gradient-to-r from-blue-600 to-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-300 hover:shadow-lg"
                           >
-                            {/* {isLoading ? "Loading..." : "Sign Up"} */} Sign
-                            Up
+                            {isLoading ? "Loading..." : "Sign Up"}
                           </button>
                         </div>
                       </div>

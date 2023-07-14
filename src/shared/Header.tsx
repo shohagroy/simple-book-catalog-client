@@ -17,6 +17,9 @@ const Header = () => {
           <li className="cursor-pointer">
             <Link to={"/"}>My Collection</Link>
           </li>
+          <li className="cursor-pointer">
+            <Link to={"/add-new"}>Add New Book</Link>
+          </li>
         </ul>
 
         <form className="flex items-center">

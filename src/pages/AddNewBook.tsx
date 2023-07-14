@@ -3,40 +3,51 @@ import React from "react";
 const AddNewBook = () => {
   return (
     <div>
-      <div>
-        <div className="p-4 overflow-hidden bg-white shadow-cardShadow rounded-md">
-          <h4 className="mb-8 text-xl font-bold text-center">Add New Book</h4>
-          <form className="book-form">
-            <div className="space-y-2">
-              <label htmlFor="name">Book Name</label>
+      <div className="max-w-[1000px] mx-auto my-10">
+        <div className="p-4 overflow-hidden bg-white shadow-md rounded-md">
+          <h4 className="mb-8 text-xl border-b p-2 font-bold text-center">
+            Add New Book
+          </h4>
+          <form className="">
+            <div className="flex flex-col my-3">
+              <label>Book Title </label>
               <input
                 required
-                className="text-input"
+                className="p-2 border "
+                placeholder="Title..."
                 type="text"
-                id="input-Bookname"
-                name="name"
               />
             </div>
 
-            <div className="space-y-2">
-              <label htmlFor="category">Author</label>
+            <div className="flex flex-col my-3">
+              <label>Author Name</label>
               <input
                 required
-                className="text-input"
+                className="p-2 border "
                 type="text"
-                id="input-Bookauthor"
-                name="author"
+                placeholder="Author..."
               />
             </div>
 
-            <div className="space-y-2">
-              <label htmlFor="image">Image Url</label>
+            <div className="flex flex-col my-3">
+              <label>Genre</label>
               <input
                 required
-                className="text-input"
+                className="p-2 border "
                 type="text"
-                id="input-Bookthumbnail"
-                name="thumbnail"
+                placeholder="Genre..."
+              />
+            </div>
+
+            <div className="flex flex-col my-3">
+              <label>Publication Date</label>
+              <input
+                required
+                className="p-2 border bg-gray-200"
+                type="text"
+                placeholder="Date..."
+                readOnly
+                value={new Date().toDateString()}
               />
             </div>
 

@@ -5,9 +5,11 @@ const AddNewBook = () => {
     <div>
       <div className="max-w-[1000px] mx-auto my-10">
         <div className="p-4 overflow-hidden bg-white shadow-md rounded-md">
-          <h4 className="mb-8 text-xl border-b p-2 font-bold text-center">
-            Add New Book
-          </h4>
+          <div className="w-full bg-gray-300">
+            <h4 className="mb-8 text-xl border-b p-2 font-bold text-center">
+              Add New Book
+            </h4>
+          </div>
           <form className="">
             <div className="flex flex-col my-3">
               <label>Book Title </label>
@@ -52,24 +54,22 @@ const AddNewBook = () => {
             </div>
 
             <div className="grid grid-cols-2 gap-8 pb-4">
-              <div className="space-y-2">
-                <label htmlFor="price">Price</label>
+              <div className="flex flex-col">
+                <label>Price</label>
                 <input
                   required
-                  className="text-input"
+                  className="p-2 border"
                   type="number"
-                  id="input-Bookprice"
                   name="price"
                 />
               </div>
 
-              <div className="space-y-2">
-                <label htmlFor="quantity">Rating</label>
+              <div className="flex flex-col">
+                <label>Rating</label>
                 <input
                   required
-                  className="text-input"
+                  className="p-2 border"
                   type="number"
-                  id="input-Bookrating"
                   name="rating"
                   min="1"
                   max="5"
@@ -79,7 +79,7 @@ const AddNewBook = () => {
 
             <div className="flex items-center">
               <input
-                id="input-Bookfeatured"
+                id="featured"
                 type="checkbox"
                 name="featured"
                 className="w-4 h-4"
@@ -90,7 +90,11 @@ const AddNewBook = () => {
               </label>
             </div>
 
-            <button type="submit" className="submit" id="submit">
+            <button
+              type="submit"
+              className="w-full bg-violet-500 text-white p-3 mt-2 rounded-md"
+              id="submit"
+            >
               Add Book
             </button>
           </form>

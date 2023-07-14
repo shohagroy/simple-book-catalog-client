@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-const Login = () => {
+const SignUp = () => {
   return (
     <main>
       <div className="h-[90vh] w-full flex border-b-2 bg-gray-100">
@@ -12,15 +12,15 @@ const Login = () => {
                   <div className="space-y-2">
                     <div>
                       <h1 className="text-xl font-medium text-center md:text-2xl font-roboto">
-                        Welcome Back!
+                        Welcome to BookShop!
                       </h1>
                     </div>
                     <div>
                       <div className="space-x-1 text-sm text-center md:text-base font-nunito">
-                        <span>New to BookShop?</span>
-                        <Link to="/signup">
+                        <span>Already have and Account?</span>
+                        <Link to="/login">
                           <button className="font-semibold text-blue-500">
-                            SignUp
+                            Login
                           </button>
                         </Link>
                       </div>
@@ -28,7 +28,7 @@ const Login = () => {
                   </div>
                   <div className="mt-10">
                     <form
-                      //   onSubmit={handleLogin}
+                      //   onSubmit={userSignUpHandelar}
                       className="text-base font-nunito"
                     >
                       <div className="space-y-4">
@@ -78,6 +78,31 @@ const Login = () => {
                             required
                           />
                         </div>
+
+                        <div className="relative flex items-center">
+                          <svg
+                            className="absolute w-5 h-5 ml-3 text-gray-400 "
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                            />
+                          </svg>
+                          <input
+                            className="w-full p-2 pl-10 text-gray-800 placeholder-gray-600 rounded-md  border focus:outline-none focus:ring-2 focus:ring-blue-300"
+                            type="password"
+                            name="password"
+                            placeholder="Confirm Password"
+                            required
+                          />
+                        </div>
+
                         <div className="flex items-start space-x-2 md:items-center">
                           <input
                             className="focus:outline-none"
@@ -92,9 +117,14 @@ const Login = () => {
                             <span>Remember Me</span>
                           </label>
                         </div>
+
                         <div>
-                          <button className="w-full p-2 text-sm font-semibold text-center text-white transition duration-100 rounded-md md:text-lg font-nunito bg-gradient-to-r from-blue-600 to-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-300 hover:shadow-lg">
-                            {/* {isLoading ? "Loading..." : "Sign In"} */} Login
+                          <button
+                            disabled={false}
+                            className="w-full p-2 text-sm font-semibold text-center text-white transition duration-100 rounded-md md:text-lg font-nunito bg-gradient-to-r from-blue-600 to-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-300 hover:shadow-lg"
+                          >
+                            {/* {isLoading ? "Loading..." : "Sign Up"} */} Sign
+                            Up
                           </button>
                         </div>
                       </div>
@@ -110,4 +140,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default SignUp;

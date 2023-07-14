@@ -23,7 +23,7 @@ const Header = () => {
         </ul>
 
         <div>
-          <Link to={"/"}>
+          <Link to={"/login"}>
             <button>Login</button>
           </Link>
         </div>

@@ -16,6 +16,7 @@ const Header = () => {
         // Sign-out successful.
       })
       .catch((error) => {
+        console.log(error);
         // An error happened.
       });
   };
@@ -35,9 +36,11 @@ const Header = () => {
           <li className="cursor-pointer">
             <Link to={"/my-collection"}>My Collection</Link>
           </li>
-          <li className="cursor-pointer">
-            <Link to={"/add-new"}>Add New Book</Link>
-          </li>
+          {user?.email && (
+            <li className="cursor-pointer">
+              <Link to={"/add-new"}>Add New Book</Link>
+            </li>
+          )}
         </ul>
 
         <div>

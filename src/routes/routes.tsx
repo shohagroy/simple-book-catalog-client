@@ -6,6 +6,7 @@ import Login from "../pages/Login";
 import SignUp from "../pages/Signup";
 import MyWishlist from "../pages/MyWishList";
 import MyCollection from "../pages/MyCollection";
+import PrivateRoute from "./PrivateRoute";
 
 const routes = createBrowserRouter([
   {
@@ -22,11 +23,19 @@ const routes = createBrowserRouter([
       },
       {
         path: "/wish-list",
-        element: <MyWishlist />,
+        element: (
+          <PrivateRoute>
+            <MyWishlist />
+          </PrivateRoute>
+        ),
       },
       {
         path: "/my-collection",
-        element: <MyCollection />,
+        element: (
+          <PrivateRoute>
+            <MyCollection />
+          </PrivateRoute>
+        ),
       },
       {
         path: "/login",

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../redux/hooks/hooks";
 import { loginUser } from "../redux/features/user/userSlice";
 import { toast, ToastOptions } from "react-hot-toast";
@@ -12,6 +12,8 @@ const Login = () => {
   );
 
   const navigate = useNavigate();
+  const location = useLocation();
+  const path = location.state?.path?.pathname || "/";
 
   const dispatch = useAppDispatch();
   const userLoginHandelar = (e: React.FormEvent<HTMLFormElement>) => {
@@ -30,7 +32,7 @@ const Login = () => {
 
   useEffect(() => {
     if (user?.email && !isLoading) {
-      navigate("/");
+      navigate(path, { relative: true });
     }
   }, [user.email, isLoading, navigate]);
 

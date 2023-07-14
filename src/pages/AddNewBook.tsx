@@ -1,6 +1,26 @@
-import React from "react";
+import React, { useState } from "react";
+
+const bookInitialData = {
+  title: "",
+  author: "",
+  genre: "",
+  publicationDate: "",
+  image: "",
+  price: "",
+  rating: "",
+  addedBy: "",
+};
 
 const AddNewBook = () => {
+  const [bookInfo, setBookInfo] = useState(bookInitialData);
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    console.log("button click");
+    console.log(bookInfo);
+  };
+
   return (
     <div>
       <div className="max-w-[1000px] mx-auto my-20">
@@ -10,7 +30,7 @@ const AddNewBook = () => {
               Add New Book
             </h4>
           </div>
-          <form className="">
+          <form onSubmit={handleSubmit}>
             <div className="flex flex-col my-3">
               <label>Book Title </label>
               <input
@@ -18,6 +38,10 @@ const AddNewBook = () => {
                 className="p-2 border "
                 placeholder="Title..."
                 type="text"
+                onChange={(e) =>
+                  setBookInfo({ ...bookInfo, title: e.target.value })
+                }
+                value={bookInfo.title}
               />
             </div>
 
@@ -28,6 +52,10 @@ const AddNewBook = () => {
                 className="p-2 border "
                 type="text"
                 placeholder="Author..."
+                onChange={(e) =>
+                  setBookInfo({ ...bookInfo, author: e.target.value })
+                }
+                value={bookInfo.author}
               />
             </div>
 
@@ -38,6 +66,23 @@ const AddNewBook = () => {
                 className="p-2 border "
                 type="text"
                 placeholder="Genre..."
+                onChange={(e) =>
+                  setBookInfo({ ...bookInfo, genre: e.target.value })
+                }
+                value={bookInfo.genre}
+              />
+            </div>
+
+            <div className="flex flex-col my-3">
+              <label>Image URL</label>
+              <input
+                className="p-2 border "
+                type="text"
+                placeholder="Image Url..."
+                onChange={(e) =>
+                  setBookInfo({ ...bookInfo, image: e.target.value })
+                }
+                value={bookInfo.image}
               />
             </div>
 
@@ -48,7 +93,10 @@ const AddNewBook = () => {
                 className="p-2 border bg-gray-200"
                 type="date"
                 placeholder="Date..."
-                // value={new Date().toDateString()}
+                onChange={(e) =>
+                  setBookInfo({ ...bookInfo, publicationDate: e.target.value })
+                }
+                value={bookInfo.publicationDate}
               />
             </div>
 
@@ -60,12 +108,20 @@ const AddNewBook = () => {
                   className="p-2 border"
                   type="number"
                   name="price"
+                  onChange={(e) =>
+                    setBookInfo({ ...bookInfo, price: e.target.value })
+                  }
+                  value={bookInfo.price}
                 />
               </div>
 
               <div className="flex flex-col">
                 <label>Rating</label>
                 <input
+                  onChange={(e) =>
+                    setBookInfo({ ...bookInfo, rating: e.target.value })
+                  }
+                  value={bookInfo.rating}
                   required
                   className="p-2 border"
                   type="number"

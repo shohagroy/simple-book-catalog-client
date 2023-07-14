@@ -15,7 +15,7 @@ const Header = () => {
             <Link to={"/wish-list"}>Wishlist</Link>
           </li>
           <li className="cursor-pointer">
-            <Link to={"/"}>My Collection</Link>
+            <Link to={"/my-collection"}>My Collection</Link>
           </li>
           <li className="cursor-pointer">
             <Link to={"/add-new"}>Add New Book</Link>

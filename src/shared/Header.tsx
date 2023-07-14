@@ -1,7 +1,25 @@
 import BookLogo from "../assets/logo.png";
 import { Link } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../redux/hooks/hooks";
+import { signOut } from "firebase/auth";
+import auth from "../configs/firebase";
+import { setUser } from "../redux/features/user/userSlice";
 
 const Header = () => {
+  const { user } = useAppSelector((state) => state.user);
+  const dispatch = useAppDispatch();
+
+  const handelUserLogout = () => {
+    signOut(auth)
+      .then(() => {
+        dispatch(setUser(null));
+        // Sign-out successful.
+      })
+      .catch((error) => {
+        // An error happened.
+      });
+  };
+
   return (
     <nav className="py-4 2xl:px-6">
       <div className="mx-auto max-w-[1440px] px-4 flex items-center justify-between">
@@ -23,9 +41,13 @@ const Header = () => {
         </ul>
 
         <div>
-          <Link to={"/login"}>
-            <button>Login</button>
-          </Link>
+          {!user.email ? (
+            <Link to={"/login"}>
+              <button>Login</button>
+            </Link>
+          ) : (
+            <button onClick={handelUserLogout}>Logout</button>
+          )}
         </div>
       </div>
     </nav>

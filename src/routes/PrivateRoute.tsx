@@ -18,8 +18,6 @@ const PrivateRoute = ({ children }: IProps) => {
     );
   }
 
-  console.log(isLoading);
-
   if (!user.email && !isLoading) {
     return <Navigate to="/login" state={{ path: location }} replace></Navigate>;
   }

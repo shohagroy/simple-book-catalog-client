@@ -1,6 +1,39 @@
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../redux/hooks/hooks";
+import { loginUser } from "../redux/features/user/userSlice";
+import { toast, ToastOptions } from "react-hot-toast";
 
 const Login = () => {
+  const [loginInfo, setLoginInfo] = useState({ email: "", password: "" });
+
+  const { isError, isLoading, user, errorMessage } = useAppSelector(
+    (state) => state.user
+  );
+
+  const navigate = useNavigate();
+
+  const dispatch = useAppDispatch();
+  const userLoginHandelar = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    dispatch(loginUser(loginInfo));
+  };
+
+  useEffect(() => {
+    if (isError && !isLoading) {
+      (
+        toast as { error: (message: string, options?: ToastOptions) => void }
+      ).error(errorMessage!);
+    }
+  }, [isError, isLoading, errorMessage]);
+
+  useEffect(() => {
+    if (user?.email && !isLoading) {
+      navigate("/");
+    }
+  }, [user.email, isLoading, navigate]);
+
   return (
     <main>
       <div className="h-[90vh] w-full flex border-b-2 bg-gray-100">
@@ -28,7 +61,7 @@ const Login = () => {
                   </div>
                   <div className="mt-10">
                     <form
-                      // onSubmit={handleLogin}
+                      onSubmit={userLoginHandelar}
                       className="text-base font-nunito"
                     >
                       <div className="space-y-4">
@@ -50,7 +83,12 @@ const Login = () => {
                           <input
                             className="w-full p-2 pl-10 text-gray-800 placeholder-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300 border"
                             type="email"
-                            name="email"
+                            onChange={(e) =>
+                              setLoginInfo({
+                                ...loginInfo,
+                                email: e.target.value,
+                              })
+                            }
                             placeholder="Email"
                             required
                           />
@@ -73,7 +111,12 @@ const Login = () => {
                           <input
                             className="w-full p-2 pl-10 text-gray-800 placeholder-gray-600 rounded-md  border focus:outline-none focus:ring-2 focus:ring-blue-300"
                             type="password"
-                            name="password"
+                            onChange={(e) =>
+                              setLoginInfo({
+                                ...loginInfo,
+                                password: e.target.value,
+                              })
+                            }
                             placeholder="Password"
                             required
                           />
@@ -94,7 +137,7 @@ const Login = () => {
                         </div>
                         <div>
                           <button className="w-full p-2 text-sm font-semibold text-center text-white transition duration-100 rounded-md md:text-lg font-nunito bg-gradient-to-r from-blue-600 to-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-300 hover:shadow-lg">
-                            {/* {isLoading ? "Loading..." : "Sign In"} */} Login
+                            {isLoading ? "Loading..." : "Sign In"}
                           </button>
                         </div>
                       </div>

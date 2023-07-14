@@ -1,5 +1,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
 import auth from "../../../configs/firebase";
 import { toast, ToastOptions } from "react-hot-toast";
 
@@ -40,6 +43,21 @@ export const createUser = createAsyncThunk(
   }
 );
 
+export const loginUser = createAsyncThunk(
+  "user/login",
+  async ({ email, password }: ICredential) => {
+    try {
+      const data = await signInWithEmailAndPassword(auth, email, password);
+
+      return data.user.email;
+    } catch (error) {
+      (
+        toast as { error: (message: string, options?: ToastOptions) => void }
+      ).error(error.code as string);
+    }
+  }
+);
+
 const userSlice = createSlice({
   name: "user",
   initialState,
@@ -58,6 +76,23 @@ const userSlice = createSlice({
         state.errorMessage = null;
       })
       .addCase(createUser.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.errorMessage = action.error.message!;
+        state.user.email = null;
+      })
+      .addCase(loginUser.pending, (state) => {
+        state.isLoading = true;
+        state.isError = false;
+        state.errorMessage = null;
+      })
+      .addCase(loginUser.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.user.email = action.payload!;
+        state.errorMessage = null;
+      })
+      .addCase(loginUser.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = false;
         state.errorMessage = action.error.message!;

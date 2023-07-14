@@ -1,7 +1,6 @@
-import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../redux/hooks/hooks";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast, ToastOptions } from "react-hot-toast";
 import { createUser } from "../redux/features/user/userSlice";
 

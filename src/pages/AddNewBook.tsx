@@ -1,8 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useAppSelector } from "../redux/hooks/hooks";
-import { usePostNewBookMutation } from "../redux/features/book/bookApi";
+import {
+  useGetSingleBooksQuery,
+  usePostNewBookMutation,
+  useUpdateBookInfoMutation,
+} from "../redux/features/book/bookApi";
 import { IBook } from "../types/globalTypes";
 import { toast } from "react-hot-toast";
+import { useLocation } from "react-router-dom";
 
 const AddNewBook = () => {
   const { user } = useAppSelector((state) => state.user);
@@ -17,8 +22,23 @@ const AddNewBook = () => {
     rating: "",
     addedBy: user?.email,
   };
-
   const [bookInfo, setBookInfo] = useState(initialBookInfo);
+
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const id = queryParams.get("id");
+
+  const { data: singleBookData } = useGetSingleBooksQuery(id as string);
+
+  const [
+    updateBookInfo,
+    {
+      isLoading: updateLoading,
+      isError: isUpdateError,
+      isSuccess: isUpdateSuccess,
+      error: updateError,
+    },
+  ] = useUpdateBookInfoMutation();
 
   const [postNewBook, { isLoading, isError, isSuccess, error }] =
     usePostNewBookMutation();
@@ -26,14 +46,30 @@ const AddNewBook = () => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    postNewBook(bookInfo)
-      .then(() => {
-        setBookInfo(initialBookInfo);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    if (id) {
+      updateBookInfo(bookInfo)
+        .then(() => {
+          setBookInfo(initialBookInfo);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      postNewBook(bookInfo)
+        .then(() => {
+          setBookInfo(initialBookInfo);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
   };
+
+  useEffect(() => {
+    if (singleBookData?.success) {
+      setBookInfo(singleBookData?.data);
+    }
+  }, [singleBookData]);
 
   useEffect(() => {
     if (isError && !isLoading) {
@@ -42,10 +78,22 @@ const AddNewBook = () => {
   }, [isError, isLoading, error]);
 
   useEffect(() => {
+    if (isUpdateError && !updateLoading) {
+      toast.error(updateError.data?.message!);
+    }
+  }, [isUpdateError, updateLoading, updateError]);
+
+  useEffect(() => {
     if (isSuccess && !isLoading) {
       toast.success("Book Added Successfully");
     }
   }, [isSuccess, isLoading]);
+
+  useEffect(() => {
+    if (isUpdateSuccess && !updateLoading) {
+      toast.success("Book Updated Successfully");
+    }
+  }, [isUpdateSuccess, updateLoading]);
 
   return (
     <div>
@@ -53,7 +101,9 @@ const AddNewBook = () => {
         <div className="p-4 overflow-hidden bg-white shadow-md rounded-md">
           <div className="w-full bg-gray-300">
             <h4 className="mb-8 text-xl border-b p-2 font-bold text-center">
-              Add New Book
+              {singleBookData?.success
+                ? "Update Book Info"
+                : "Add New Book Info"}
             </h4>
           </div>
           <form onSubmit={handleSubmit}>
@@ -158,13 +208,23 @@ const AddNewBook = () => {
               </div>
             </div>
 
-            <button
-              type="submit"
-              className="w-full bg-violet-500 text-white p-3 mt-2 rounded-md"
-              id="submit"
-            >
-              {isLoading ? "Loading..." : " Add Book"}
-            </button>
+            {singleBookData?.success ? (
+              <button
+                type="submit"
+                className="w-full bg-violet-500 text-white p-3 mt-2 rounded-md"
+                id="submit"
+              >
+                {updateLoading ? "Loading..." : " Update Book"}
+              </button>
+            ) : (
+              <button
+                type="submit"
+                className="w-full bg-violet-500 text-white p-3 mt-2 rounded-md"
+                id="submit"
+              >
+                {isLoading ? "Loading..." : " Add Book"}
+              </button>
+            )}
           </form>
         </div>
       </div>

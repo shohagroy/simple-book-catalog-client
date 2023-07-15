@@ -1,25 +1,51 @@
-import React, { useState } from "react";
-
-const bookInitialData = {
-  title: "",
-  author: "",
-  genre: "",
-  publicationDate: "",
-  image: "",
-  price: "",
-  rating: "",
-  addedBy: "",
-};
+import React, { useState, useEffect } from "react";
+import { useAppSelector } from "../redux/hooks/hooks";
+import { usePostNewBookMutation } from "../redux/features/book/bookApi";
+import { IBook } from "../types/globalTypes";
+import { toast } from "react-hot-toast";
 
 const AddNewBook = () => {
-  const [bookInfo, setBookInfo] = useState(bookInitialData);
+  const { user } = useAppSelector((state) => state.user);
+
+  const initialBookInfo: IBook = {
+    title: "",
+    author: "",
+    genre: "",
+    publicationDate: "",
+    image: "",
+    price: "",
+    rating: "",
+    addedBy: user?.email,
+  };
+
+  const [bookInfo, setBookInfo] = useState(initialBookInfo);
+
+  const [postNewBook, { isLoading, isError, isSuccess, error }] =
+    usePostNewBookMutation();
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    console.log("button click");
-    console.log(bookInfo);
+    postNewBook(bookInfo)
+      .then(() => {
+        setBookInfo(initialBookInfo);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
+
+  useEffect(() => {
+    if (isError && !isLoading) {
+      toast.error(error.data?.message!);
+    }
+  }, [isError, isLoading, error]);
+
+  useEffect(() => {
+    if (isSuccess && !isLoading) {
+      toast.success("Book Added Successfully");
+    }
+  }, [isSuccess, isLoading]);
 
   return (
     <div>
@@ -109,7 +135,7 @@ const AddNewBook = () => {
                   type="number"
                   name="price"
                   onChange={(e) =>
-                    setBookInfo({ ...bookInfo, price: e.target.value })
+                    setBookInfo({ ...bookInfo, price: Number(e.target.value) })
                   }
                   value={bookInfo.price}
                 />
@@ -119,7 +145,7 @@ const AddNewBook = () => {
                 <label>Rating</label>
                 <input
                   onChange={(e) =>
-                    setBookInfo({ ...bookInfo, rating: e.target.value })
+                    setBookInfo({ ...bookInfo, rating: Number(e.target.value) })
                   }
                   value={bookInfo.rating}
                   required
@@ -137,7 +163,7 @@ const AddNewBook = () => {
               className="w-full bg-violet-500 text-white p-3 mt-2 rounded-md"
               id="submit"
             >
-              Add Book
+              {isLoading ? "Loading..." : " Add Book"}
             </button>
           </form>
         </div>

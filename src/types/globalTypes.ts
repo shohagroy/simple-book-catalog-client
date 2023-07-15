@@ -5,7 +5,7 @@ export interface IBook {
   genre: string;
   publicationDate: string;
   image?: string;
-  price: number;
-  rating: number;
-  addedBy: string;
+  price: number | string;
+  rating: number | string;
+  addedBy: string | null;
 }

@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { IBook } from "../types/globalTypes";
 import { useAppSelector } from "../redux/hooks/hooks";
 import { Link } from "react-router-dom";
+import swal from "sweetalert";
+import { useDeleteSingleBookMutation } from "../redux/features/book/bookApi";
 
 interface BookCardProps {
   data: IBook;
@@ -9,6 +11,56 @@ interface BookCardProps {
 
 const BookCard: React.FC<BookCardProps> = ({ data }) => {
   const { user } = useAppSelector((state) => state.user);
+
+  const [deleteSingleBook, { isLoading, isError, isSuccess, error }] =
+    useDeleteSingleBookMutation();
+
+  const bookDeleteHandelar = () => {
+    swal({
+      title: "Are you sure?",
+      text: `Delete This "${data.title}" book`,
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    }).then((willDelete) => {
+      if (willDelete) {
+        deleteSingleBook(data)
+          .then(() => {
+            "success";
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      } else {
+        swal("Your Book is safe!");
+      }
+    });
+  };
+
+  useEffect(() => {
+    if (isLoading) {
+      swal("Loading...", {
+        icon: "info",
+      });
+    }
+  }, [isLoading]);
+
+  useEffect(() => {
+    if (isSuccess && !isLoading) {
+      swal("Poof! Your Book has been deleted!", {
+        icon: "success",
+      });
+    }
+  }, [isLoading, isSuccess]);
+
+  useEffect(() => {
+    if (isError && !isLoading) {
+      swal(error?.data?.message, {
+        icon: "error",
+      });
+    }
+  }, [isError, isLoading, error]);
+
   return (
     <div>
       <div className=" flex border border-violet-500 rounded-md">
@@ -42,7 +94,10 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
                     </svg>
                   </button>
                 </Link>
-                <button className="">
+                <button
+                  className="hover:text-red-600"
+                  onClick={bookDeleteHandelar}
+                >
                   <svg
                     fill="none"
                     viewBox="0 0 24 24"

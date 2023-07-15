@@ -36,6 +36,15 @@ const bookApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["books"],
     }),
+
+    deleteSingleBook: builder.mutation({
+      query: (data: IBook) => ({
+        url: `/books/${data._id!}`,
+        method: "DELETE",
+        body: data,
+      }),
+      invalidatesTags: ["books"],
+    }),
   }),
 });
 
@@ -44,4 +53,5 @@ export const {
   usePostNewBookMutation,
   useGetSingleBooksQuery,
   useUpdateBookInfoMutation,
+  useDeleteSingleBookMutation,
 } = bookApi;

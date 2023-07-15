@@ -1,7 +1,11 @@
 import React from "react";
 import BookCard from "../components/BookCard";
+import { useGetAllBooksQuery } from "../redux/features/book/bookApi";
+import { IBook } from "../types/globalTypes";
 
 const Home = () => {
+  const { data, isLoading, isError } = useGetAllBooksQuery(undefined);
+
   return (
     <div>
       <main className="py-12 2xl:px-6">
@@ -60,11 +64,27 @@ const Home = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1  md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {[...Array(12)].map((el, i) => (
-              <BookCard key={i} />
-            ))}
-          </div>
+          {isLoading ? (
+            <div className="h-[40vh] flex justify-center items-center">
+              <p className="text-violet-500 text-2xl font-bold">Loading...</p>
+            </div>
+          ) : (
+            <div>
+              {isError ? (
+                <div className="h-[40vh] flex justify-center items-center">
+                  <p className="text-red-500 text-2xl font-bold">
+                    Something Wrong!
+                  </p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1  md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {data?.data?.map((book: IBook) => (
+                    <BookCard key={book._id} />
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </main>
     </div>

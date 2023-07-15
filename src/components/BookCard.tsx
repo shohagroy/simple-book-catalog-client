@@ -4,6 +4,8 @@ import { useAppSelector } from "../redux/hooks/hooks";
 import { Link } from "react-router-dom";
 import swal from "sweetalert";
 import { useDeleteSingleBookMutation } from "../redux/features/book/bookApi";
+import { useAddToWishListMutation } from "../redux/features/wishlist/wishListApi";
+import { toast } from "react-hot-toast";
 
 interface BookCardProps {
   data: IBook;
@@ -12,54 +14,70 @@ interface BookCardProps {
 const BookCard: React.FC<BookCardProps> = ({ data }) => {
   const { user } = useAppSelector((state) => state.user);
 
-  const [deleteSingleBook, { isLoading, isError, isSuccess, error }] =
-    useDeleteSingleBookMutation();
+  // const [deleteSingleBook, { isLoading, isError, isSuccess, error }] =
+  //   useDeleteSingleBookMutation();
 
-  const bookDeleteHandelar = () => {
-    swal({
-      title: "Are you sure?",
-      text: `Delete This "${data.title}" book`,
-      icon: "warning",
-      buttons: true,
-      dangerMode: true,
-    }).then((willDelete) => {
-      if (willDelete) {
-        deleteSingleBook(data)
-          .then(() => {
-            "success";
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      } else {
-        swal("Your Book is safe!");
-      }
-    });
+  // const bookDeleteHandelar = () => {
+  //   swal({
+  //     title: "Are you sure?",
+  //     text: `Delete This "${data.title}" book`,
+  //     icon: "warning",
+  //     buttons: true,
+  //     dangerMode: true,
+  //   }).then((willDelete) => {
+  //     if (willDelete) {
+  //       deleteSingleBook(data)
+  //         .then(() => {
+  //           "success";
+  //         })
+  //         .catch((error) => {
+  //           console.log(error);
+  //         });
+  //     } else {
+  //       swal("Your Book is safe!");
+  //     }
+  //   });
+  // };
+
+  // useEffect(() => {
+  //   if (isLoading) {
+  //     swal("Loading...", {
+  //       icon: "info",
+  //     });
+  //   }
+  // }, [isLoading]);
+
+  // useEffect(() => {
+  //   if (isSuccess && !isLoading) {
+  //     swal("Poof! Your Book has been deleted!", {
+  //       icon: "success",
+  //     });
+  //   }
+  // }, [isLoading, isSuccess]);
+
+  // useEffect(() => {
+  //   if (isError && !isLoading) {
+  //     swal(error?.data?.message, {
+  //       icon: "error",
+  //     });
+  //   }
+  // }, [isError, isLoading, error]);
+
+  const [addToWishList, { isSuccess }] = useAddToWishListMutation();
+
+  const wishListHandelar = () => {
+    addToWishList({ data, email: user.email })
+      .then(() => {})
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   useEffect(() => {
-    if (isLoading) {
-      swal("Loading...", {
-        icon: "info",
-      });
+    if (isSuccess) {
+      toast.success("Wish list Added successfully");
     }
-  }, [isLoading]);
-
-  useEffect(() => {
-    if (isSuccess && !isLoading) {
-      swal("Poof! Your Book has been deleted!", {
-        icon: "success",
-      });
-    }
-  }, [isLoading, isSuccess]);
-
-  useEffect(() => {
-    if (isError && !isLoading) {
-      swal(error?.data?.message, {
-        icon: "error",
-      });
-    }
-  }, [isError, isLoading, error]);
+  }, [isSuccess]);
 
   return (
     <div>
@@ -74,7 +92,7 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
           alt="book"
         />
         <div className="flex-1 h-full pr-2 pt-2 flex flex-col">
-          <div className="flex items-center justify-end">
+          {/* <div className="flex items-center justify-end">
             {user.email === data.addedBy && (
               <div className="text-gray-500 space-x-2">
                 <Link to={`/add-new?id=${data._id!}`}>
@@ -114,7 +132,7 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
                 </button>
               </div>
             )}
-          </div>
+          </div> */}
 
           <div className="space-y-2 mt-2h-full">
             <h4 className="text-xl font-bold capitalize ">{data.title}</h4>
@@ -141,10 +159,24 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
                 BDT {data.price}
               </p>
               <Link to={`/${data._id!}`}>
-                <button className="bg-violet-500 text-white p-2 rounded-md text-xl font-bold ">
+                <button className="bg-violet-500 text-white px-2 py-1 rounded-md font-bold ">
                   See Details
                 </button>
               </Link>
+            </div>
+
+            <div className="flex justify-between mt-2 items-center">
+              <button
+                disabled={data.wishlist.includes(user.email)}
+                onClick={wishListHandelar}
+                className="bg-green-500 text-white text-sm px-2 py-1 rounded-md font-bold "
+              >
+                Add to Wishlist
+              </button>
+
+              <button className="bg-blue-500 text-sm text-white px-2 py-1 rounded-md font-bold ">
+                Add to Collection
+              </button>
             </div>
           </div>
         </div>

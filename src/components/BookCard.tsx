@@ -6,6 +6,7 @@ import swal from "sweetalert";
 import { useDeleteSingleBookMutation } from "../redux/features/book/bookApi";
 import { useAddToWishListMutation } from "../redux/features/wishlist/wishListApi";
 import { toast } from "react-hot-toast";
+import { useAddtoCollectionsMutation } from "../redux/features/collections/collectionsApi";
 
 interface BookCardProps {
   data: IBook;
@@ -78,6 +79,26 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
       toast.success("Wish list Added successfully");
     }
   }, [isSuccess]);
+
+  const [addtoCollection, { isSuccess: collectionSussess }] =
+    useAddtoCollectionsMutation();
+
+  const collectionListHandelar = () => {
+    addtoCollection({
+      id: data._id,
+      data: { user: user.email, status: "reading" },
+    })
+      .then(() => {})
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  useEffect(() => {
+    if (collectionSussess) {
+      toast.success("Collection list Added successfully");
+    }
+  }, [collectionSussess]);
 
   return (
     <div>
@@ -174,7 +195,13 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
                 Add to Wishlist
               </button>
 
-              <button className="bg-blue-500 text-sm text-white px-2 py-1 rounded-md font-bold ">
+              <button
+                disabled={data.collections.some(
+                  (collection) => collection.user === user.email
+                )}
+                onClick={collectionListHandelar}
+                className="bg-blue-500 text-sm text-white px-2 py-1 rounded-md font-bold "
+              >
                 Add to Collection
               </button>
             </div>

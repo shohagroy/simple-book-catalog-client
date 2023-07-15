@@ -8,6 +8,7 @@ export interface IBook {
   price: number | string;
   rating: number | string;
   wishlist: string[];
+  collections: [];
   addedBy: string | null;
 }
 
@@ -15,3 +16,9 @@ export interface IWishList {
   data: IBook;
   email: string;
 }
+
+export type ICollection = {
+  user: "string";
+  status: "string";
+  id: string;
+};

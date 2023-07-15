@@ -1,6 +1,37 @@
 import { Link } from "react-router-dom";
+import { useDeleteUserWishListMutation } from "../redux/features/wishlist/wishListApi";
+import { useAppSelector } from "../redux/hooks/hooks";
+import { IBook } from "../types/globalTypes";
+import { useEffect } from "react";
+import { toast } from "react-hot-toast";
+import { useGetUserBookCollectionsQuery } from "../redux/features/collections/collectionsApi";
 
 const MyCollection = () => {
+  const { user } = useAppSelector((state) => state.user);
+
+  const { data, isLoading, isError, error } = useGetUserBookCollectionsQuery(
+    user.email
+  );
+
+  console.log(data);
+
+  const [deleteuserWishList, { isSuccess }] = useDeleteUserWishListMutation();
+
+  const weshlistDeleteHandelar = (data: IBook) => {
+    console.log("delete", data);
+    deleteuserWishList({ data, email: user.email })
+      .then(() => {})
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success("wishlist remove successfully");
+    }
+  }, [isSuccess]);
+
   return (
     <main>
       <section className="mt-12 lg:mt-0">
@@ -13,7 +44,7 @@ const MyCollection = () => {
           }}
         >
           <p className="p-12 text-2xl lg:text-4xl text-center font-bold ">
-            My Collection
+            My Collections
           </p>
         </div>
 
@@ -27,111 +58,117 @@ const MyCollection = () => {
           <div className="my-6 p-3 lg:p-0 text-xs lg:text-normal">
             <div className="mx-auto ">
               <div className="overflow-x-auto">
-                <div className="text-2xl font-semibold text-center p-3">
-                  <p> Loading...</p>
-                </div>
-                <div className="text-2xl font-semibold text-center p-3">
-                  {/* <p>{error?.data?.message}</p> */}
-                </div>
-                <table className="min-w-full ">
-                  <colgroup>
-                    <col />
-                    <col />
-                    <col />
-                    <col />
-                    <col />
-                    <col />
-                  </colgroup>
-                  <thead className="border">
-                    <tr className="text-center">
-                      <th className="p-3 border">SL</th>
-                      <th className="p-3 border">Image</th>
-                      <th className="p-3 border">Title</th>
-                      <th className="p-3 border">Unit</th>
-                      <th className="p-3 border ">Price</th>
-                      <th className="p-3 border">Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr key={"_id"} className="border border-opacity-20 ">
-                      <th className="p-3 border-r">
-                        <div className="w-full h-full flex justify-center items-center">
-                          <p>{"i + 1"}</p>
-                        </div>
-                      </th>
+                {isLoading && (
+                  <div className="text-2xl font-semibold text-center p-3">
+                    <p> Loading...</p>
+                  </div>
+                )}
 
-                      <td className="p-3 border-r">
-                        <div className="w-full h-full flex justify-center items-center">
-                          <img
-                            className="w-14 h-14 rounded-full"
-                            src={"images"}
-                            alt={"title"}
-                          />
-                        </div>
-                      </td>
-                      <td className="p-3 border-r">
-                        <div className="w-full h-full capitalize">
-                          <Link to={`/${"productId"}`}>
-                            <p className="text-xl font-semibold hover:text-red-600">
-                              {"title"}
-                            </p>
-                          </Link>
-                        </div>
-                      </td>
-                      <td className="p-3 border-r ">
-                        <div className="w-full h-full flex justify-center items-center">
-                          <p className="text-xl font-semibold hover:text-red-600 uppercase">
-                            {"unit"}
-                          </p>
-                        </div>
-                      </td>
+                {isError && (
+                  <div className="text-2xl font-semibold text-center p-3">
+                    <p>{error?.data?.message}</p>
+                  </div>
+                )}
 
-                      <td className="p-3 border-r ">
-                        <div className="w-full h-full flex justify-center items-center">
-                          {/* <div className="flex items-center content-center my-auto  py-0 rounded-md border border-gray-100 font-semibold">
-                          <div className="m-0">
-                            <button
-                              disabled={count < 2 ? true : false}
-                              onClick={() => setCount(count - 1)}
-                              className=" px-3 py-1 my-0 mx-auto text-lg "
-                            >
-                              −
-                            </button>
-                          </div>
-                          <div className="m-0">
-                            <p className=" px-3 py-1 my-0 mx-auto ">
-                              {count}
-                            </p>
-                          </div>
-                          <div className="m-0">
-                            <button
-                              onClick={() => setCount(count + 1)}
-                              className=" px-3 py-1 my-0 mx-auto text-lg "
-                            >
-                              +
-                            </button>
-                          </div>
-                        </div> */}
-                          <p className="text-xl font-semibold hover:text-red-600">
-                            ${"price"}
-                          </p>
-                        </div>
-                      </td>
+                {data?.data?.length > 0 ? (
+                  <table className="min-w-full ">
+                    <colgroup>
+                      <col />
+                      <col />
+                      <col />
+                      <col />
+                      <col />
+                      <col />
+                    </colgroup>
+                    <thead className="border">
+                      <tr className="text-center">
+                        <th className="p-3 border">SL</th>
+                        <th className="p-3 border">Image</th>
+                        <th className="p-3 border">Title</th>
+                        <th className="p-3 border">Author</th>
+                        <th className="p-3 border ">Status</th>
+                        <th className="p-3 border">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {data?.data?.map((book, i) => (
+                        <tr
+                          key={"book?._id"}
+                          className="border border-opacity-20 "
+                        >
+                          <th className="p-3 border-r">
+                            <div className="w-full h-full flex justify-center items-center">
+                              <p>{i + 1}</p>
+                            </div>
+                          </th>
 
-                      <td className="p-3 border-r ">
-                        <div className="text-gray-500 space-x-2 flex justify-center items-center">
-                          <select name="" id="">
-                            <option value="">Reading</option>
-                            <option value="">Finish</option>
-                          </select>
-                        </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-                <div className="text-2xl font-semibold text-center p-3">
-                  <p>No Wish List Product Found!</p>
-                </div>
+                          <td className="p-3 border-r">
+                            <div className="w-full h-full flex justify-center items-center">
+                              <img
+                                className="w-14 h-14 rounded-full"
+                                src={book.image}
+                                alt={book.title}
+                              />
+                            </div>
+                          </td>
+                          <td className="p-3 border-r">
+                            <div className="w-full h-full capitalize">
+                              <Link to={`/${book._id}`}>
+                                <p className="text-xl font-semibold hover:text-red-600">
+                                  {book.title}
+                                </p>
+                              </Link>
+                            </div>
+                          </td>
+                          <td className="p-3 border-r ">
+                            <div className="w-full h-full flex justify-start items-center">
+                              <p className="text-xl font-semibold hover:text-red-600 capitalize">
+                                {book.author}
+                              </p>
+                            </div>
+                          </td>
+
+                          <td className="p-3 border-r ">
+                            <div className="w-full h-full flex justify-center items-center">
+                              <select className="w-full p-2 rounded-md bg-transparent border">
+                                <option value="">Reading</option>
+                                <option value="">Reading 50%</option>
+                                <option value="">Finish</option>
+                              </select>
+                            </div>
+                          </td>
+
+                          <td className="p-3 border-r ">
+                            <div className="text-gray-500 space-x-2 flex justify-center items-center">
+                              <button
+                                onClick={() => weshlistDeleteHandelar(book)}
+                                className="hover:text-red-600"
+                              >
+                                <svg
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  strokeWidth="1.5"
+                                  stroke="currentColor"
+                                  className="w-6 h-6"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                                  ></path>
+                                </svg>
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                ) : (
+                  <div className="text-2xl font-semibold text-center p-3">
+                    <p>No Wish List Product Found!</p>
+                  </div>
+                )}
               </div>
             </div>
           </div>

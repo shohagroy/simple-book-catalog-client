@@ -2,6 +2,7 @@ import React from "react";
 import BookCard from "../components/BookCard";
 import { useGetAllBooksQuery } from "../redux/features/book/bookApi";
 import { IBook } from "../types/globalTypes";
+import { Link } from "react-router-dom";
 
 const Home = () => {
   const { data, isLoading, isError } = useGetAllBooksQuery(undefined);
@@ -79,7 +80,7 @@ const Home = () => {
               ) : (
                 <div className="grid grid-cols-1  md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {data?.data?.map((book: IBook) => (
-                    <BookCard key={book._id} />
+                    <BookCard key={book._id} data={book} />
                   ))}
                 </div>
               )}

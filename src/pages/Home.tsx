@@ -1,11 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import BookCard from "../components/BookCard";
 import { useGetAllBooksQuery } from "../redux/features/book/bookApi";
 import { IBook } from "../types/globalTypes";
-import { Link } from "react-router-dom";
 
 const Home = () => {
-  const { data, isLoading, isError } = useGetAllBooksQuery(undefined);
+  const [page, setPage] = useState(1);
+  const [search, setSearch] = useState("");
+
+  const query = `searchTerm=${search}&page=${page}`;
+  const { data, isLoading, isError } = useGetAllBooksQuery(query);
+
+  console.log(data);
+  console.log(query);
 
   return (
     <div>
@@ -30,8 +36,9 @@ const Home = () => {
                     ></path>
                   </svg>
                   <input
+                    onChange={(e) => setSearch(e.target.value)}
                     type="text"
-                    placeholder="Filter books..."
+                    placeholder="Search books..."
                     className="pl-10 w-full p-2 rounded-md bg-transparent border border-gray-500"
                   />
                 </div>
@@ -86,6 +93,26 @@ const Home = () => {
               )}
             </div>
           )}
+
+          <div className="flex justify-center items-center my-8">
+            <div className="flex justify-center items-center ">
+              <button
+                disabled={page === 1}
+                className="border px-3  py-1 rounded-sm hover:bg-violet-500 hover:text-white duration-150 "
+                onClick={() => setPage(page - 1)}
+              >
+                Priv
+              </button>
+              <p className="mx-4 text-xl">{page}</p>
+              <button
+                disabled={Math.ceil(data?.meta?.total / 9) === page}
+                className="border px-3 py-1 rounded-sm hover:bg-violet-500 hover:text-white duration-150 "
+                onClick={() => setPage(page + 1)}
+              >
+                Next
+              </button>
+            </div>
+          </div>
         </div>
       </main>
     </div>

@@ -1,10 +1,13 @@
 import { Link } from "react-router-dom";
-import { useDeleteUserWishListMutation } from "../redux/features/wishlist/wishListApi";
 import { useAppSelector } from "../redux/hooks/hooks";
 import { IBook } from "../types/globalTypes";
 import { useEffect } from "react";
 import { toast } from "react-hot-toast";
-import { useGetUserBookCollectionsQuery } from "../redux/features/collections/collectionsApi";
+import {
+  useDeleteUserBookCollectionMutation,
+  useGetUserBookCollectionsQuery,
+  useUpdateUserBookCollectionMutation,
+} from "../redux/features/collections/collectionsApi";
 
 const MyCollection = () => {
   const { user } = useAppSelector((state) => state.user);
@@ -13,14 +16,18 @@ const MyCollection = () => {
     user.email
   );
 
-  console.log(data);
+  const [deleteUserBookCollection, { isSuccess }] =
+    useDeleteUserBookCollectionMutation();
 
-  const [deleteuserWishList, { isSuccess }] = useDeleteUserWishListMutation();
-
-  const weshlistDeleteHandelar = (data: IBook) => {
-    console.log("delete", data);
-    deleteuserWishList({ data, email: user.email })
-      .then(() => {})
+  const myCollectionDeleteHandelar = (data: IBook) => {
+    const deleteData = {
+      id: data._id,
+      email: user.email,
+    };
+    deleteUserBookCollection(deleteData)
+      .then(() => {
+        console.log("success");
+      })
       .catch((error) => {
         console.log(error);
       });
@@ -28,9 +35,35 @@ const MyCollection = () => {
 
   useEffect(() => {
     if (isSuccess) {
-      toast.success("wishlist remove successfully");
+      toast.success("collection remove successfully");
     }
   }, [isSuccess]);
+
+  const [updateUserBookCollection, { isSuccess: updateSuccess }] =
+    useUpdateUserBookCollectionMutation();
+
+  const bookCollectionStatusUpdateHandelar = (data: string) => {
+    const updatedData: { id: string; email: string; value: string } = {
+      id: data.id,
+      email: user.email,
+      value: data.value,
+    };
+
+    console.log(updatedData);
+    updateUserBookCollection(updatedData)
+      .then(() => {
+        console.log("success");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  useEffect(() => {
+    if (updateSuccess) {
+      toast.success("Collection Status Update successfully");
+    }
+  }, [updateSuccess]);
 
   return (
     <main>
@@ -130,10 +163,50 @@ const MyCollection = () => {
 
                           <td className="p-3 border-r ">
                             <div className="w-full h-full flex justify-center items-center">
-                              <select className="w-full p-2 rounded-md bg-transparent border">
-                                <option value="">Reading</option>
-                                <option value="">Reading 50%</option>
-                                <option value="">Finish</option>
+                              <select
+                                onChange={(e) =>
+                                  bookCollectionStatusUpdateHandelar(
+                                    JSON.parse(e.target.value)
+                                  )
+                                }
+                                className="w-full p-2 rounded-md bg-transparent border"
+                              >
+                                <option
+                                  selected={book.collections.some(
+                                    (collection) =>
+                                      collection.status === "reading"
+                                  )}
+                                  value={JSON.stringify({
+                                    id: book._id,
+                                    value: "reading",
+                                  })}
+                                >
+                                  Reading
+                                </option>
+                                <option
+                                  selected={book.collections.some(
+                                    (collection) =>
+                                      collection.status === "reading-50"
+                                  )}
+                                  value={JSON.stringify({
+                                    id: book._id,
+                                    value: "reading-50",
+                                  })}
+                                >
+                                  Reading 50%
+                                </option>
+                                <option
+                                  selected={book.collections.some(
+                                    (collection) =>
+                                      collection.status === "finish"
+                                  )}
+                                  value={JSON.stringify({
+                                    id: book._id,
+                                    value: "finish",
+                                  })}
+                                >
+                                  Finish
+                                </option>
                               </select>
                             </div>
                           </td>
@@ -141,7 +214,7 @@ const MyCollection = () => {
                           <td className="p-3 border-r ">
                             <div className="text-gray-500 space-x-2 flex justify-center items-center">
                               <button
-                                onClick={() => weshlistDeleteHandelar(book)}
+                                onClick={() => myCollectionDeleteHandelar(book)}
                                 className="hover:text-red-600"
                               >
                                 <svg
@@ -166,7 +239,7 @@ const MyCollection = () => {
                   </table>
                 ) : (
                   <div className="text-2xl font-semibold text-center p-3">
-                    <p>No Wish List Product Found!</p>
+                    <p>No Collection Book Found!</p>
                   </div>
                 )}
               </div>

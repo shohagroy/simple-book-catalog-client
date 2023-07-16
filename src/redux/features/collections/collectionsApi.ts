@@ -19,13 +19,22 @@ const wishListApi = apiSlice.injectEndpoints({
       providesTags: ["collections"],
     }),
 
-    deleteUserWishList: builder.mutation({
-      query: (data: IWishList) => ({
-        url: `/wishlists/${data.email}`,
+    deleteUserBookCollection: builder.mutation({
+      query: (data: { id: string; email: string }) => ({
+        url: `/collections/${data.email}`,
         method: "DELETE",
-        body: data.data,
+        body: data,
       }),
-      invalidatesTags: ["wishLists"],
+      invalidatesTags: ["collections"],
+    }),
+
+    updateUserBookCollection: builder.mutation({
+      query: (data: { id: string; email: string; value: string }) => ({
+        url: `/collections/${data.email}`,
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: ["collections"],
     }),
   }),
 });
@@ -33,5 +42,6 @@ const wishListApi = apiSlice.injectEndpoints({
 export const {
   useAddtoCollectionsMutation,
   useGetUserBookCollectionsQuery,
-  useDeleteUserWishListMutation,
+  useDeleteUserBookCollectionMutation,
+  useUpdateUserBookCollectionMutation,
 } = wishListApi;

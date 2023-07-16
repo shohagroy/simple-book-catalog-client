@@ -10,6 +10,7 @@ import { useAddToWishListMutation } from "../redux/features/wishlist/wishListApi
 import { useAddtoCollectionsMutation } from "../redux/features/collections/collectionsApi";
 import { toast } from "react-hot-toast";
 import swal from "sweetalert";
+import Reviews from "../components/Reviews";
 
 const BookDetails = () => {
   const { id } = useParams();
@@ -239,6 +240,11 @@ const BookDetails = () => {
               </div>
             </div>
           </div>
+        </div>
+
+        <div className="my-6 max-w-[1440px] mx-auto p-4">
+          <p className="text-xl font-semibold">Reviews</p>
+          <Reviews id={_id} title={title} />
         </div>
       </main>
     </div>

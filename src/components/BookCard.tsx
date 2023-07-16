@@ -54,7 +54,7 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
       <div className=" flex border border-violet-500 rounded-md">
         <Link to={`/${data._id!}`}>
           <img
-            className="h-[240px] w-[170px] object-cover mr-4"
+            className="h-[250px] w-[170px] object-cover mr-4"
             src={
               data?.image
                 ? data?.image
@@ -67,7 +67,8 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
         <div className="flex-1 h-full pr-2 pt-2 flex flex-col">
           <div className="space-y-2 mt-2h-full">
             <h4 className="text-xl font-bold capitalize ">{data.title}</h4>
-            <p className="capitalize">{data.author}</p>
+            <p className="capitalize">author: {data.author}</p>
+            <p className="capitalize">genre: {data.genre}</p>
 
             <div className="flex">
               {[...Array(data.rating)].map((el, i) => (

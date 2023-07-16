@@ -85,10 +85,20 @@ const Home = () => {
                   </p>
                 </div>
               ) : (
-                <div className="grid grid-cols-1  md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {data?.data?.map((book: IBook) => (
-                    <BookCard key={book._id} data={book} />
-                  ))}
+                <div>
+                  {data?.data.length ? (
+                    <div className="grid grid-cols-1  md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {data?.data?.map((book: IBook) => (
+                        <BookCard key={book._id} data={book} />
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="h-[40vh] flex justify-center items-center">
+                      <h2 className="text-2xl font-bold text-red-500">
+                        No Book Found!
+                      </h2>
+                    </div>
+                  )}
                 </div>
               )}
             </div>

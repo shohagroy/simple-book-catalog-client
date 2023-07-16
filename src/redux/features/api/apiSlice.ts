@@ -13,6 +13,6 @@ export const apiSlice = createApi({
       return headers;
     },
   }),
-  tagTypes: ["books", "wishLists", "collections"],
+  tagTypes: ["books", "wishLists", "collections", "reviews"],
   endpoints: () => ({}),
 });

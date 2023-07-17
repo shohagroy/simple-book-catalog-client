@@ -7,23 +7,49 @@ import { useAppSelector } from "../redux/hooks/hooks";
 import { IBook } from "../types/globalTypes";
 import { useEffect } from "react";
 import { toast } from "react-hot-toast";
+import { IApiReponse } from "../types/apiResponse";
+import swal from "sweetalert";
 
 const MyWishlist = () => {
   const { user } = useAppSelector((state) => state.user);
 
-  const { data, isLoading, isError, error } = useGetUserWishlistsQuery(
-    user.email
-  );
+  const { data, isLoading, isError } = (useGetUserWishlistsQuery(
+    user.email as string
+  ) ?? {}) as {
+    data: IApiReponse<IBook[]> | undefined;
+    isLoading: boolean;
+    isError: boolean;
+    error: Error;
+  };
 
   const [deleteuserWishList, { isSuccess }] = useDeleteUserWishListMutation();
 
   const weshlistDeleteHandelar = (data: IBook) => {
-    console.log("delete", data);
-    deleteuserWishList({ data, email: user.email })
-      .then(() => {})
-      .catch((error) => {
-        console.log(error);
-      });
+    swal({
+      title: "Are you sure?",
+      text: `Delete This book of Wishlists!`,
+      icon: "warning",
+      buttons: ["Cancel", "Delete"],
+      dangerMode: true,
+    })
+      .then((willDelete) => {
+        if (willDelete) {
+          deleteuserWishList({ data, email: user.email })
+            .then(() => {
+              // console.log('success');
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        } else {
+          swal("Your Wishlists is safe!")
+            .then(() => {
+              console.log("success");
+            })
+            .catch((error) => console.log(error));
+        }
+      })
+      .catch((error) => console.log(error));
   };
 
   useEffect(() => {
@@ -66,11 +92,11 @@ const MyWishlist = () => {
 
                 {isError && (
                   <div className="text-2xl font-semibold text-center p-3">
-                    <p>{error?.data?.message}</p>
+                    Something went Wrong
                   </div>
                 )}
 
-                {data?.data?.length > 0 ? (
+                {data?.data && data?.data.length > 0 ? (
                   <table className="min-w-full ">
                     <colgroup>
                       <col />
@@ -92,10 +118,7 @@ const MyWishlist = () => {
                     </thead>
                     <tbody>
                       {data?.data?.map((book, i) => (
-                        <tr
-                          key={"book?._id"}
-                          className="border border-opacity-20 "
-                        >
+                        <tr key={i} className="border border-opacity-20 ">
                           <th className="p-3 border-r">
                             <div className="w-full h-full flex justify-center items-center">
                               <p>{i + 1}</p>
@@ -113,7 +136,7 @@ const MyWishlist = () => {
                           </td>
                           <td className="p-3 border-r">
                             <div className="w-full h-full capitalize">
-                              <Link to={`/${book._id}`}>
+                              <Link to={`/${book._id!}`}>
                                 <p className="text-xl font-semibold hover:text-red-600">
                                   {book.title}
                                 </p>

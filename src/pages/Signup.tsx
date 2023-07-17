@@ -23,7 +23,13 @@ const SignUp = () => {
     e.preventDefault();
 
     if (info.password === info.confirmPassword) {
-      dispatch(createUser({ email: info.email, password: info.password }));
+      dispatch(createUser({ email: info.email, password: info.password }))
+        .then(() => {
+          // console.log("success")
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     } else {
       (
         toast as { error: (message: string, options?: ToastOptions) => void }

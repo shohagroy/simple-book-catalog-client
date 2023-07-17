@@ -27,11 +27,11 @@ export interface IYear {
   updatedAt: string;
 }
 
-export type ICollection = {
+export interface ICollection {
   user: string | null;
   status: string;
   id?: string;
-};
+}
 
 export interface IReview {
   review: string;

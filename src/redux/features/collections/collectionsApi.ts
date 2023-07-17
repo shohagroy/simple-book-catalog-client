@@ -1,4 +1,4 @@
-import { ICollection, IWishList } from "../../../types/globalTypes";
+import { ICollection } from "../../../types/globalTypes";
 import { apiSlice } from "../api/apiSlice";
 
 const wishListApi = apiSlice.injectEndpoints({
@@ -29,8 +29,8 @@ const wishListApi = apiSlice.injectEndpoints({
     }),
 
     updateUserBookCollection: builder.mutation({
-      query: (data: { id: string; email: string; value: string }) => ({
-        url: `/collections/${data.email}`,
+      query: (data: ICollection) => ({
+        url: `/collections/${data.user!}`,
         method: "PATCH",
         body: data,
       }),

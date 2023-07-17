@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useAppSelector } from "../redux/hooks/hooks";
-import { IBook } from "../types/globalTypes";
+import { IBook, ICollection } from "../types/globalTypes";
 import { useEffect } from "react";
 import { toast } from "react-hot-toast";
 import {
@@ -8,29 +8,60 @@ import {
   useGetUserBookCollectionsQuery,
   useUpdateUserBookCollectionMutation,
 } from "../redux/features/collections/collectionsApi";
+import { IApiReponse } from "../types/apiResponse";
+import swal from "sweetalert";
 
 const MyCollection = () => {
   const { user } = useAppSelector((state) => state.user);
 
-  const { data, isLoading, isError, error } = useGetUserBookCollectionsQuery(
-    user.email
-  );
+  const {
+    data,
+    isLoading,
+    isError,
+  }: {
+    data: IApiReponse<IBook[]> | undefined;
+    isLoading: boolean;
+    isError: boolean;
+  } = (useGetUserBookCollectionsQuery(user.email as string) ?? {}) as {
+    data: IApiReponse<IBook[]> | undefined;
+    isLoading: boolean;
+    isError: boolean;
+  };
 
   const [deleteUserBookCollection, { isSuccess }] =
     useDeleteUserBookCollectionMutation();
 
   const myCollectionDeleteHandelar = (data: IBook) => {
-    const deleteData = {
-      id: data._id,
-      email: user.email,
+    const deleteData: { id: string; email: string } = {
+      id: data._id!,
+      email: user.email!,
     };
-    deleteUserBookCollection(deleteData)
-      .then(() => {
-        console.log("success");
+
+    swal({
+      title: "Are you sure?",
+      text: `Delete This book of Collections!`,
+      icon: "warning",
+      buttons: ["Cancel", "Delete"],
+      dangerMode: true,
+    })
+      .then((willDelete) => {
+        if (willDelete) {
+          deleteUserBookCollection(deleteData)
+            .then(() => {
+              // console.log("success");
+            })
+            .catch((error: Error) => {
+              console.log(error);
+            });
+        } else {
+          swal("Your Collections is safe!")
+            .then(() => {
+              console.log("success");
+            })
+            .catch((error) => console.log(error));
+        }
       })
-      .catch((error) => {
-        console.log(error);
-      });
+      .catch((error) => console.log(error));
   };
 
   useEffect(() => {
@@ -42,19 +73,21 @@ const MyCollection = () => {
   const [updateUserBookCollection, { isSuccess: updateSuccess }] =
     useUpdateUserBookCollectionMutation();
 
-  const bookCollectionStatusUpdateHandelar = (data: string) => {
-    const updatedData: { id: string; email: string; value: string } = {
-      id: data.id,
-      email: user.email,
-      value: data.value,
+  const bookCollectionStatusUpdateHandelar = (data: {
+    id: string;
+    value: string;
+  }) => {
+    const updatedData: ICollection = {
+      id: data?.id,
+      user: user.email!,
+      status: data?.value,
     };
 
-    console.log(updatedData);
     updateUserBookCollection(updatedData)
       .then(() => {
-        console.log("success");
+        // console.log("success");
       })
-      .catch((error) => {
+      .catch((error: Error) => {
         console.log(error);
       });
   };
@@ -99,11 +132,11 @@ const MyCollection = () => {
 
                 {isError && (
                   <div className="text-2xl font-semibold text-center p-3">
-                    <p>{error?.data?.message}</p>
+                    <p>Something went Wrong!</p>
                   </div>
                 )}
 
-                {data?.data?.length > 0 ? (
+                {data?.data && data?.data.length > 0 ? (
                   <table className="min-w-full ">
                     <colgroup>
                       <col />
@@ -125,10 +158,7 @@ const MyCollection = () => {
                     </thead>
                     <tbody>
                       {data?.data?.map((book, i) => (
-                        <tr
-                          key={"book?._id"}
-                          className="border border-opacity-20 "
-                        >
+                        <tr key={i} className="border border-opacity-20 ">
                           <th className="p-3 border-r">
                             <div className="w-full h-full flex justify-center items-center">
                               <p>{i + 1}</p>
@@ -146,7 +176,7 @@ const MyCollection = () => {
                           </td>
                           <td className="p-3 border-r">
                             <div className="w-full h-full capitalize">
-                              <Link to={`/${book._id}`}>
+                              <Link to={`/${book._id!}`}>
                                 <p className="text-xl font-semibold hover:text-red-600">
                                   {book.title}
                                 </p>
@@ -166,7 +196,10 @@ const MyCollection = () => {
                               <select
                                 onChange={(e) =>
                                   bookCollectionStatusUpdateHandelar(
-                                    JSON.parse(e.target.value)
+                                    JSON.parse(e.target.value) as {
+                                      id: string;
+                                      value: string;
+                                    }
                                   )
                                 }
                                 className="w-full p-2 rounded-md bg-transparent border"

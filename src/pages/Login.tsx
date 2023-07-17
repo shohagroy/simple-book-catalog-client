@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, Location, useLocation, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../redux/hooks/hooks";
 import { loginUser } from "../redux/features/user/userSlice";
 import { toast, ToastOptions } from "react-hot-toast";
@@ -11,15 +11,28 @@ const Login = () => {
     (state) => state.user
   );
 
+  interface CustomLocation extends Location {
+    state: {
+      path?: {
+        pathname?: string;
+      };
+    };
+  }
+
   const navigate = useNavigate();
-  const location = useLocation();
+  const location: CustomLocation = useLocation();
+
   const path = location.state?.path?.pathname || "/";
 
   const dispatch = useAppDispatch();
   const userLoginHandelar = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    dispatch(loginUser(loginInfo));
+    dispatch(loginUser(loginInfo))
+      .then(() => {
+        // console.log('success');
+      })
+      .catch((error) => console.log(error));
   };
 
   useEffect(() => {
@@ -32,9 +45,9 @@ const Login = () => {
 
   useEffect(() => {
     if (user?.email && !isLoading) {
-      navigate(path, { relative: true });
+      navigate(path);
     }
-  }, [user.email, isLoading, navigate]);
+  }, [user.email, isLoading, navigate, path]);
 
   return (
     <main>

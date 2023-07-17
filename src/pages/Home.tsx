@@ -2,16 +2,23 @@ import React, { useState } from "react";
 import BookCard from "../components/BookCard";
 import { useGetAllBooksQuery } from "../redux/features/book/bookApi";
 import { IBook } from "../types/globalTypes";
+import { genres } from "../db/Genres";
+import { useGetAllBookYearsQuery } from "../redux/features/year/yearApi";
 
 const Home = () => {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
+  const [genre, setGenre] = useState("");
+  const [publishedYear, setPublishedYear] = useState("");
 
-  const query = `searchTerm=${search}&page=${page}`;
-  const { data, isLoading, isError } = useGetAllBooksQuery(query);
+  const query = `searchTerm=${search}&page=${page}${
+    genre && `&genre=${genre}`
+  }${publishedYear && `&publicationYear=${publishedYear}`}`;
 
-  console.log(data);
   console.log(query);
+
+  const { data, isLoading, isError } = useGetAllBooksQuery(query);
+  const { data: years } = useGetAllBookYearsQuery(undefined);
 
   return (
     <div>
@@ -47,13 +54,17 @@ const Home = () => {
               <div className="flex items-center space-x-4">
                 <div>
                   <select
-                    name=""
-                    id=""
-                    className="w-full p-2 rounded-md bg-transparent border border-gray-500 mx-2"
+                    onChange={(e) => setGenre(e.target.value)}
+                    className="w-full p-2 rounded-md bg-transparent border border-gray-500 mx-2 capitalize"
                   >
                     <option value="" className="hidden">
                       Filterd By Genre
                     </option>
+                    <option value="">All Genres</option>
+
+                    {genres.map((genre) => (
+                      <option value={genre.name}>{genre.name}</option>
+                    ))}
                   </select>
                 </div>
 
@@ -62,10 +73,17 @@ const Home = () => {
                     name=""
                     id=""
                     className="w-full p-2 rounded-md bg-transparent border border-gray-500 "
+                    onChange={(e) => setPublishedYear(e.target.value)}
                   >
                     <option value="" className="hidden">
                       Filterd By Publication Year
                     </option>
+                    <option value="">All Years</option>
+                    {years?.data.map((year) => (
+                      <option key={year?._id} value={year?.year}>
+                        {year?.year}
+                      </option>
+                    ))}
                   </select>
                 </div>
               </div>

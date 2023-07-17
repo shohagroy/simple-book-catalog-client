@@ -8,6 +8,7 @@ import {
 import { IBook } from "../types/globalTypes";
 import { toast } from "react-hot-toast";
 import { useLocation } from "react-router-dom";
+import { genres } from "../db/Genres";
 
 const AddNewBook = () => {
   const { user } = useAppSelector((state) => state.user);
@@ -137,16 +138,21 @@ const AddNewBook = () => {
 
             <div className="flex flex-col my-3">
               <label>Genre</label>
-              <input
-                required
-                className="p-2 border "
-                type="text"
-                placeholder="Genre..."
+              <select
+                name=""
+                id=""
+                className="p-2 border capitalize"
                 onChange={(e) =>
                   setBookInfo({ ...bookInfo, genre: e.target.value })
                 }
-                value={bookInfo.genre}
-              />
+              >
+                <option className="hidden" value="">
+                  Selete Genre
+                </option>
+                {genres.map((genre) => (
+                  <option value={genre.name}>{genre.name}</option>
+                ))}
+              </select>
             </div>
 
             <div className="flex flex-col my-3">

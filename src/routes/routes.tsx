@@ -20,7 +20,11 @@ const routes = createBrowserRouter([
       },
       {
         path: "/:id",
-        element: <BookDetails />,
+        element: (
+          <PrivateRoute>
+            <BookDetails />
+          </PrivateRoute>
+        ),
       },
       {
         path: "/add-new",

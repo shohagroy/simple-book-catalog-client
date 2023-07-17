@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import BookCard from "../components/BookCard";
 import { useGetAllBooksQuery } from "../redux/features/book/bookApi";
-import { IBook } from "../types/globalTypes";
+import { IBook, IYear } from "../types/globalTypes";
 import { genres } from "../db/Genres";
 import { useGetAllBookYearsQuery } from "../redux/features/year/yearApi";
+import { IApiReponse } from "../types/apiResponse";
 
 const Home = () => {
   const [page, setPage] = useState(1);
@@ -15,10 +16,27 @@ const Home = () => {
     genre && `&genre=${genre}`
   }${publishedYear && `&publicationYear=${publishedYear}`}`;
 
-  console.log(query);
+  const {
+    data,
+    isLoading,
+    isError,
+  }: {
+    data?: IApiReponse<IBook[]> | undefined;
+    isLoading: boolean;
+    isError: boolean;
+  } = (useGetAllBooksQuery(query) ?? {}) as {
+    data?: IApiReponse<IBook[]> | undefined;
+    isLoading: boolean;
+    isError: boolean;
+  };
 
-  const { data, isLoading, isError } = useGetAllBooksQuery(query);
-  const { data: years } = useGetAllBookYearsQuery(undefined);
+  const {
+    data: years,
+  }: {
+    data?: IApiReponse<IYear[]> | undefined;
+  } = (useGetAllBookYearsQuery(undefined) ?? {}) as {
+    data?: IApiReponse<IYear[]> | undefined;
+  };
 
   return (
     <div>
@@ -79,11 +97,12 @@ const Home = () => {
                       Filterd By Publication Year
                     </option>
                     <option value="">All Years</option>
-                    {years?.data.map((year) => (
-                      <option key={year?._id} value={year?.year}>
-                        {year?.year}
-                      </option>
-                    ))}
+                    {years?.data &&
+                      years.data.map((year) => (
+                        <option key={year?._id} value={year?.year}>
+                          {year?.year}
+                        </option>
+                      ))}
                   </select>
                 </div>
               </div>
@@ -104,7 +123,7 @@ const Home = () => {
                 </div>
               ) : (
                 <div>
-                  {data?.data.length ? (
+                  {data?.data && data?.data.length ? (
                     <div className="grid grid-cols-1  md:grid-cols-2 lg:grid-cols-3 gap-4">
                       {data?.data?.map((book: IBook) => (
                         <BookCard key={book._id} data={book} />
@@ -133,7 +152,9 @@ const Home = () => {
               </button>
               <p className="mx-4 text-xl">{page}</p>
               <button
-                disabled={Math.ceil(data?.meta?.total / 9) === page}
+                disabled={
+                  data?.meta && Math.ceil(data?.meta?.total / 9) === page
+                }
                 className="border px-3 py-1 rounded-sm hover:bg-violet-500 hover:text-white duration-150 "
                 onClick={() => setPage(page + 1)}
               >

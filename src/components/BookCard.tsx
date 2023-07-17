@@ -16,8 +16,10 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
   const [addToWishList, { isSuccess }] = useAddToWishListMutation();
 
   const wishListHandelar = () => {
-    addToWishList({ data, email: user.email })
-      .then(() => {})
+    addToWishList({ data, email: user.email! })
+      .then(() => {
+        "success";
+      })
       .catch((error) => {
         console.log(error);
       });
@@ -34,12 +36,14 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
 
   const collectionListHandelar = () => {
     addtoCollection({
-      id: data._id,
-      data: { user: user.email, status: "reading" },
+      id: data._id!,
+      data: { user: user.email!, status: "reading" },
     })
-      .then(() => {})
+      .then(() => {
+        "success";
+      })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
       });
   };
 
@@ -99,7 +103,7 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
 
             <div className="flex justify-between mt-2 items-center">
               <button
-                disabled={data.wishlist.includes(user.email)}
+                disabled={data.wishlist && data.wishlist.includes(user.email!)}
                 onClick={wishListHandelar}
                 className="bg-green-500 text-white text-sm px-2 py-1 rounded-md font-bold "
               >
@@ -107,8 +111,8 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
               </button>
 
               <button
-                disabled={data.collections.some(
-                  (collection) => collection.user === user.email
+                disabled={data.collections?.some(
+                  (collection) => collection?.user === user?.email
                 )}
                 onClick={collectionListHandelar}
                 className="bg-blue-500 text-sm text-white px-2 py-1 rounded-md font-bold "

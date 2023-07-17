@@ -1,5 +1,5 @@
 export interface IBook {
-  _id?: number;
+  _id?: string;
   title: string;
   author: string;
   genre: string;
@@ -8,8 +8,11 @@ export interface IBook {
   price: number | string;
   rating: number | string;
   wishlist: string[];
-  collections: [];
+  collections: ICollection[];
   addedBy: string | null;
+  publicationYear: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface IWishList {
@@ -17,8 +20,15 @@ export interface IWishList {
   email: string;
 }
 
+export interface IYear {
+  _id: string;
+  year: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export type ICollection = {
-  user: "string";
-  status: "string";
+  user: string;
+  status: string;
   id: string;
 };

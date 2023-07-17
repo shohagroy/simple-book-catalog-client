@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { IBook } from "../types/globalTypes";
+import { IBook, ICollection } from "../types/globalTypes";
 import { useAppSelector } from "../redux/hooks/hooks";
 import { Link } from "react-router-dom";
 import { useAddToWishListMutation } from "../redux/features/wishlist/wishListApi";
@@ -34,11 +34,14 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
   const [addtoCollection, { isSuccess: collectionSussess }] =
     useAddtoCollectionsMutation();
 
+  const collectionInfo: ICollection = {
+    id: data?._id,
+    status: "reading",
+    user: user.email,
+  };
+
   const collectionListHandelar = () => {
-    addtoCollection({
-      id: data._id!,
-      data: { user: user.email!, status: "reading" },
-    })
+    addtoCollection(collectionInfo)
       .then(() => {
         "success";
       })
@@ -75,7 +78,7 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
             <p className="capitalize">genre: {data.genre}</p>
 
             <div className="flex">
-              {[...Array(data.rating)].map((el, i) => (
+              {[...Array(data.rating)].map((_, i) => (
                 <svg
                   key={i}
                   viewBox="0 0 20 20"

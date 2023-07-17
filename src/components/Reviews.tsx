@@ -5,13 +5,8 @@ import {
 } from "../redux/features/review/reviewApi";
 import { useAppSelector } from "../redux/hooks/hooks";
 import { toast } from "react-hot-toast";
-
-export interface IReview {
-  review: string;
-  date: string;
-  bookId: string;
-  reviewBy: string | null;
-}
+import { IReview } from "../types/globalTypes";
+import { IApiReponse } from "../types/apiResponse";
 
 const Reviews = ({ id, title }: { id: string; title: string }) => {
   const [reviewText, setReviewText] = useState("");
@@ -20,7 +15,10 @@ const Reviews = ({ id, title }: { id: string; title: string }) => {
 
   const [addNewReview, { isLoading, isSuccess }] = useAddNewReviewMutation();
 
-  const { data } = useGetBookReviewsQuery(id);
+  const { data }: { data: IApiReponse<IReview[]> | undefined } =
+    (useGetBookReviewsQuery(id) ?? {}) as {
+      data: IApiReponse<IReview[]> | undefined;
+    };
 
   const userReview: IReview = {
     review: reviewText,
@@ -57,7 +55,7 @@ const Reviews = ({ id, title }: { id: string; title: string }) => {
 
         <div className=" ml-3">
           <div>
-            {data?.data?.map((review, i) => (
+            {data?.data?.map((review, i: number) => (
               <p className=" font-semibold my-2 capitalize">
                 {i + 1}. {review?.review} -
                 <i className="text-normal text-gray-500 text-sm">

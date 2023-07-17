@@ -20,7 +20,7 @@ const bookApi = apiSlice.injectEndpoints({
     }),
 
     postNewBook: builder.mutation({
-      query: (data: IBook) => ({
+      query: (data: Partial<IBook>) => ({
         url: "/books",
         method: "POST",
         body: data,

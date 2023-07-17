@@ -1,13 +1,11 @@
+import { ICollection, IWishList } from "../../../types/globalTypes";
 import { apiSlice } from "../api/apiSlice";
 
 const wishListApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     addtoCollections: builder.mutation({
-      query: (data: {
-        id: string;
-        data: { user: string; status: string };
-      }) => ({
-        url: `/collections/${data.id}`,
+      query: (data: ICollection) => ({
+        url: `/collections/${data.id!}`,
         method: "POST",
         body: data,
       }),

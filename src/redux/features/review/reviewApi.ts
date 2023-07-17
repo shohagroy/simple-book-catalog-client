@@ -1,4 +1,4 @@
-import { IReview } from "../../../components/Reviews";
+import { IReview } from "../../../types/globalTypes";
 import { apiSlice } from "../api/apiSlice";
 
 const reviewApi = apiSlice.injectEndpoints({

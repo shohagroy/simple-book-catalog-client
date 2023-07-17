@@ -16,8 +16,8 @@ export interface IBook {
 }
 
 export interface IWishList {
-  data: IBook;
-  email: string;
+  data?: IBook;
+  email: string | null;
 }
 
 export interface IYear {
@@ -28,7 +28,14 @@ export interface IYear {
 }
 
 export type ICollection = {
-  user: string;
+  user: string | null;
   status: string;
-  id: string;
+  id?: string;
 };
+
+export interface IReview {
+  review: string;
+  date: string;
+  bookId: string;
+  reviewBy: string | null;
+}

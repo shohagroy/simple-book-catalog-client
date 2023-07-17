@@ -1,52 +1,62 @@
 import React, { useState, useEffect } from "react";
 import { useAppSelector } from "../redux/hooks/hooks";
-import { usePostNewBookMutation } from "../redux/features/book/bookApi";
+import {
+  useGetSingleBooksQuery,
+  useUpdateBookInfoMutation,
+} from "../redux/features/book/bookApi";
 import { IBook } from "../types/globalTypes";
 import { toast } from "react-hot-toast";
+import { useLocation, useNavigate } from "react-router-dom";
 import { genres } from "../db/Genres";
+import { IApiReponse } from "../types/apiResponse";
 
-const AddNewBook = () => {
-  const { user } = useAppSelector((state) => state.user);
+const UpdateBookInfo = () => {
+  const [bookInfo, setBookInfo] = useState<Partial<IBook>>({});
 
-  const initialBookInfo: Partial<IBook> = {
-    title: "",
-    author: "",
-    genre: "",
-    publicationDate: "",
-    image: "",
-    price: "",
-    rating: "",
-    addedBy: user?.email,
-    publicationYear: "",
-  };
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const id = queryParams.get("id");
+  const navigate = useNavigate();
 
-  const [bookInfo, setBookInfo] = useState(initialBookInfo);
+  const { data }: { data: IApiReponse<IBook> | undefined } =
+    (useGetSingleBooksQuery(id as string) ?? {}) as {
+      data: IApiReponse<IBook> | undefined;
+    };
 
-  const [postNewBook, { isLoading, isError, isSuccess, error }] =
-    usePostNewBookMutation();
+  const [updateBookInfo, { isLoading, isError, isSuccess, error }] =
+    useUpdateBookInfoMutation();
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    postNewBook(bookInfo)
+
+    updateBookInfo(bookInfo as IBook)
       .then(() => {
-        setBookInfo(initialBookInfo);
+        navigate(`/:id`);
       })
-      .catch((error: Error) => {
+      .catch((error) => {
         console.log(error);
       });
   };
 
   useEffect(() => {
     if (isError && !isLoading) {
-      toast.error("Something went Wrong!");
+      if ("data" in error!) {
+        toast.error("Something went Wrong");
+      }
     }
   }, [isError, isLoading, error]);
 
   useEffect(() => {
     if (isSuccess && !isLoading) {
-      toast.success("Book Added Successfully");
+      toast.success("Book Updated Successfully");
     }
   }, [isSuccess, isLoading]);
+
+  useEffect(() => {
+    if (data?.success) {
+      setBookInfo(data.data!);
+    }
+  }, [data]);
 
   return (
     <div>
@@ -54,7 +64,7 @@ const AddNewBook = () => {
         <div className="p-4 overflow-hidden bg-white shadow-md rounded-md">
           <div className="w-full bg-gray-300">
             <h4 className="mb-8 text-xl border-b p-2 font-bold text-center">
-              Add New Book
+              Update Book Info
             </h4>
           </div>
           <form onSubmit={handleSubmit}>
@@ -66,9 +76,13 @@ const AddNewBook = () => {
                 placeholder="Title..."
                 type="text"
                 onChange={(e) =>
-                  setBookInfo({ ...bookInfo, title: e.target.value })
+                  setBookInfo({
+                    ...bookInfo,
+                    title: e.target.value,
+                    author: bookInfo?.author || "",
+                  })
                 }
-                value={bookInfo.title}
+                value={bookInfo?.title}
               />
             </div>
 
@@ -82,7 +96,7 @@ const AddNewBook = () => {
                 onChange={(e) =>
                   setBookInfo({ ...bookInfo, author: e.target.value })
                 }
-                value={bookInfo.author}
+                value={bookInfo?.author}
               />
             </div>
 
@@ -116,7 +130,7 @@ const AddNewBook = () => {
                 onChange={(e) =>
                   setBookInfo({ ...bookInfo, image: e.target.value })
                 }
-                value={bookInfo.image}
+                value={bookInfo?.image}
               />
             </div>
 
@@ -124,13 +138,14 @@ const AddNewBook = () => {
               <label>Publication Date</label>
               <input
                 required
+                readOnly
                 className="p-2 border bg-gray-200"
                 type="date"
                 placeholder="Date..."
                 onChange={(e) =>
                   setBookInfo({ ...bookInfo, publicationDate: e.target.value })
                 }
-                value={bookInfo.publicationDate}
+                value={bookInfo?.publicationDate}
               />
             </div>
 
@@ -145,7 +160,7 @@ const AddNewBook = () => {
                   onChange={(e) =>
                     setBookInfo({ ...bookInfo, price: Number(e.target.value) })
                   }
-                  value={bookInfo.price}
+                  value={bookInfo?.price}
                 />
               </div>
 
@@ -155,7 +170,7 @@ const AddNewBook = () => {
                   onChange={(e) =>
                     setBookInfo({ ...bookInfo, rating: Number(e.target.value) })
                   }
-                  value={bookInfo.rating}
+                  value={bookInfo?.rating}
                   required
                   className="p-2 border"
                   type="number"
@@ -171,7 +186,7 @@ const AddNewBook = () => {
               className="w-full bg-violet-500 text-white p-3 mt-2 rounded-md"
               id="submit"
             >
-              {isLoading ? "Loading..." : " Add Book"}
+              {isLoading ? "Loading..." : " Update Book Info"}
             </button>
           </form>
         </div>
@@ -180,4 +195,4 @@ const AddNewBook = () => {
   );
 };
 
-export default AddNewBook;
+export default UpdateBookInfo;

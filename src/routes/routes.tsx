@@ -8,6 +8,7 @@ import MyWishlist from "../pages/MyWishList";
 import MyCollection from "../pages/MyCollection";
 import PrivateRoute from "./PrivateRoute";
 import BookDetails from "../pages/BookDetails";
+import UpdateBookInfo from "../pages/UpdateBookInfo";
 
 const routes = createBrowserRouter([
   {
@@ -31,6 +32,14 @@ const routes = createBrowserRouter([
         element: (
           <PrivateRoute>
             <AddNewBook />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "/update-book-info",
+        element: (
+          <PrivateRoute>
+            <UpdateBookInfo />
           </PrivateRoute>
         ),
       },

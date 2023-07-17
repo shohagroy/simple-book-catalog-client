@@ -4,7 +4,7 @@ import {
   signInWithEmailAndPassword,
 } from "firebase/auth";
 import auth from "../../../configs/firebase";
-import { toast, ToastOptions } from "react-hot-toast";
+import { toast } from "react-hot-toast";
 
 interface IUserState {
   user: {
@@ -36,9 +36,11 @@ export const createUser = createAsyncThunk(
 
       return data.user.email;
     } catch (error) {
-      (
-        toast as { error: (message: string, options?: ToastOptions) => void }
-      ).error(error.code as string);
+      if (typeof error === "object" && error !== null && "code" in error) {
+        toast.error((error as { code: string }).code);
+      } else {
+        toast.error("An error occurred");
+      }
     }
   }
 );
@@ -51,9 +53,11 @@ export const loginUser = createAsyncThunk(
 
       return data.user.email;
     } catch (error) {
-      (
-        toast as { error: (message: string, options?: ToastOptions) => void }
-      ).error(error.code as string);
+      if (typeof error === "object" && error !== null && "code" in error) {
+        toast.error((error as { code: string }).code);
+      } else {
+        toast.error("An error occurred");
+      }
     }
   }
 );

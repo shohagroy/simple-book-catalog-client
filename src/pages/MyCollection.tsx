@@ -169,7 +169,11 @@ const MyCollection = () => {
                             <div className="w-full h-full flex justify-center items-center">
                               <img
                                 className="w-14 h-14 rounded-full"
-                                src={book.image}
+                                src={
+                                  book.image
+                                    ? book.image
+                                    : "https://www.roxannetroup.com/uploads/4/8/1/4/48144785/coming-f-24-nobkgd.png"
+                                }
                                 alt={book.title}
                               />
                             </div>

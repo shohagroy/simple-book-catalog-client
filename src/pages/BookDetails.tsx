@@ -191,7 +191,15 @@ const BookDetails = () => {
               ) : (
                 <div className="flex justify-center">
                   <div className="">
-                    <img className="" src={image} alt="book" />
+                    <img
+                      className=""
+                      src={
+                        image
+                          ? image
+                          : "https://www.roxannetroup.com/uploads/4/8/1/4/48144785/coming-f-24-nobkgd.png"
+                      }
+                      alt="book"
+                    />
                   </div>
 
                   <div className="">

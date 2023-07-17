@@ -5,7 +5,7 @@ const wishListApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     addToWishList: builder.mutation({
       query: (data: IWishList) => ({
-        url: `/wishlists/${data.email}`,
+        url: `/wishlists/${data.email!}`,
         method: "POST",
         body: data.data,
       }),
@@ -21,7 +21,7 @@ const wishListApi = apiSlice.injectEndpoints({
 
     deleteUserWishList: builder.mutation({
       query: (data: IWishList) => ({
-        url: `/wishlists/${data.email}`,
+        url: `/wishlists/${data.email!}`,
         method: "DELETE",
         body: data.data,
       }),

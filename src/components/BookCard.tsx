@@ -65,7 +65,7 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
             src={
               data?.image
                 ? data?.image
-                : "https://m.media-amazon.com/images/P/B07DZ86WP7.01._SCLZZZZZZZ_SX500_.jpg"
+                : "https://www.roxannetroup.com/uploads/4/8/1/4/48144785/coming-f-24-nobkgd.png"
             }
             alt="book"
           />

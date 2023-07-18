@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { IBook, ICollection } from "../types/globalTypes";
 import { useAppSelector } from "../redux/hooks/hooks";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAddToWishListMutation } from "../redux/features/wishlist/wishListApi";
 import { toast } from "react-hot-toast";
 import { useAddtoCollectionsMutation } from "../redux/features/collections/collectionsApi";
@@ -12,17 +12,22 @@ interface BookCardProps {
 
 const BookCard: React.FC<BookCardProps> = ({ data }) => {
   const { user } = useAppSelector((state) => state.user);
+  const navigate = useNavigate();
 
   const [addToWishList, { isSuccess }] = useAddToWishListMutation();
 
   const wishListHandelar = () => {
-    addToWishList({ data, email: user.email! })
-      .then(() => {
-        "success";
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    if (!user.email) {
+      navigate("/login");
+    } else {
+      addToWishList({ data, email: user.email })
+        .then(() => {
+          "success";
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
   };
 
   useEffect(() => {
@@ -41,13 +46,17 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
   };
 
   const collectionListHandelar = () => {
-    addtoCollection(collectionInfo)
-      .then(() => {
-        "success";
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    if (!user.email) {
+      navigate("/login");
+    } else {
+      addtoCollection(collectionInfo)
+        .then(() => {
+          "success";
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
   };
 
   useEffect(() => {

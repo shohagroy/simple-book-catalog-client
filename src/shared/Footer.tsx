@@ -1,11 +1,15 @@
-import BookLogo from "../assets/logo.png";
-
 const Footer = () => {
   return (
     <section className="mt-8 p-3 lg:p-0 mx-auto max-w-[1440px] ">
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
         <div>
-          <img src={BookLogo} alt="logo" className="w-[200px]" />
+          <img
+            src={
+              "https://www.bookweb.org/sites/default/files/BookshopLogoTeaserJanuary2019.png"
+            }
+            alt="logo"
+            className="w-[200px]"
+          />
 
           <p className="text-gray-500 w-[250px] my-2">
             The home and elements needed to create beautiful products.

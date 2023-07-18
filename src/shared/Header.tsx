@@ -1,5 +1,4 @@
-import BookLogo from "../assets/logo.png";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../redux/hooks/hooks";
 import { signOut } from "firebase/auth";
 import auth from "../configs/firebase";
@@ -24,30 +23,36 @@ const Header = () => {
   return (
     <nav className="py-4 2xl:px-6">
       <div className="mx-auto max-w-[1440px] px-4 flex items-center justify-between">
-        <img src={BookLogo} width="150px" className="object-contain" />
+        <img
+          src={
+            "https://www.bookweb.org/sites/default/files/BookshopLogoTeaserJanuary2019.png"
+          }
+          width="150px"
+          className="object-contain"
+        />
 
         <ul className="flex items-center space-x-6">
-          <li className="font-semibold cursor-pointer">
-            <Link to={"/"}>Book Store</Link>
+          <li className=" cursor-pointer">
+            <NavLink to={"/"}>Book Store</NavLink>
           </li>
           <li className="cursor-pointer">
-            <Link to={"/wish-list"}>Wishlist</Link>
+            <NavLink to={"/wish-list"}>Wishlist</NavLink>
           </li>
           <li className="cursor-pointer">
-            <Link to={"/my-collection"}>My Collection</Link>
+            <NavLink to={"/my-collection"}>My Collection</NavLink>
           </li>
           {user?.email && (
             <li className="cursor-pointer">
-              <Link to={"/add-new"}>Add New Book</Link>
+              <NavLink to={"/add-new"}>Add New Book</NavLink>
             </li>
           )}
         </ul>
 
         <div>
           {!user.email ? (
-            <Link to={"/login"}>
+            <NavLink to={"/login"}>
               <button>Login</button>
-            </Link>
+            </NavLink>
           ) : (
             <button onClick={handelUserLogout}>Logout</button>
           )}
